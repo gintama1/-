@@ -15,7 +15,7 @@
 /* set NO_CODE to TRUE to get a compiler that does not
  * generate code
  */
-#define NO_CODE FALSE
+#define NO_CODE TRUE
 
 #include "util.h"
 #if NO_PARSE
@@ -41,7 +41,7 @@ FILE * code;
 int EchoSource = FALSE;
 int TraceScan = FALSE;
 int TraceParse = TRUE;
-int TraceAnalyze = FALSE;
+int TraceAnalyze = TRUE;
 int TraceCode = FALSE;
 
 int Error = FALSE;
@@ -74,16 +74,20 @@ main( int argc, char * argv[] )
     fprintf(listing,"\nSyntax tree:\n");
     printTree(syntaxTree);
   }
-  while (1) {}
+  
  
 #if !NO_ANALYZE
+
   if (! Error)
   { if (TraceAnalyze) fprintf(listing,"\nBuilding Symbol Table...\n");
     buildSymtab(syntaxTree);
+	
     if (TraceAnalyze) fprintf(listing,"\nChecking Types...\n");
     typeCheck(syntaxTree);
     if (TraceAnalyze) fprintf(listing,"\nType Checking Finished\n");
+	
   }
+  while (1) {}
 #if !NO_CODE
   if (! Error)
   { char * codefile="C:\\Users\\86151\\Desktop\\result.txt";
@@ -105,7 +109,7 @@ main( int argc, char * argv[] )
 #endif
 #endif
   fclose(source);
-
+  
   return 0;
 }
 

@@ -12,7 +12,8 @@
 /* Procedure printToken prints a token 
  * and its lexeme to the listing file
  */
-
+int start_time=0;
+int end_time=0;
 void printToken( TokenType token, const char* tokenString )
 { switch (token)
   { case IF:
@@ -101,6 +102,8 @@ TreeNode * newExpNode(ExpKind kind)
     t->kind.exp = kind;
     t->lineno = lineno;
     t->type = Void;
+	t->id_type = 0;			//默认id为变量名
+	t->declared = 0;		//默认不是声明
   }
   return t;
 }
@@ -195,31 +198,61 @@ void printTree( TreeNode * tree )
 		case ElseK:
 			fprintf(listing, "Else\n");
 			break;
-        case RepeatK:
-          fprintf(listing,"Repeat\n");
-          break;
+      
 		case WhileK:
 			fprintf(listing, "While\n");
 			break;
+		case EndK:
+			fprintf(listing, "Component End\n");
+			break;
 		case ReturnK:
 			fprintf(listing, "Return\n");
+			/*if (tree->child[0] != NULL)tree->type = tree->child[0]->type;
+			else tree->type = Void;*/
 			break;
         case AssignK:
           fprintf(listing,"Assign \n");
           break;
 		case VarDecK:
-			if(tree->len==0)
-			fprintf(listing, "Variable declare\n");
+			tree->child[1]->declared = 1;
+			
+			if (tree->len == 0) {
+				
+				fprintf(listing, "Variable declare\n");
+			}
 			else {
-				fprintf(listing, "Array declare len is %d\n",tree->len);
+				tree->child[1]->id_type = 1;
+				fprintf(listing, "Array declare len is %d\n", tree->len);
+				tree->len = 4 * tree->len;
+				
+				
 			}
 			break;
-        case ReadK:
+		case CallK:
+			tree->child[0]->id_type = 2;					//变量名类型为函数类型
+			if (strcmp(tree->child[0]->attr.name , "input")==0) {		//特殊的函数input，output
+				fprintf(listing, "input \n");
+				tree->kind.stmt = ReadK;
+				tree->type = Integer;
+			}
+			else if (strcmp(tree->child[0]->attr.name, "output") == 0) {
+				fprintf(listing, "output \n");
+				tree->kind.stmt = WriteK;
+				tree->type = Void;
+			}
+			else {
+				fprintf(listing, "Call \n");
+			}
+			
+
+
+			break;
+        /*case ReadK:
           fprintf(listing,"Read: %s\n",tree->attr.name);
           break;
         case WriteK:
           fprintf(listing,"Write\n");
-          break;
+          break;*/
         default:
           fprintf(listing,"Unknown ExpNode kind\n");
           break;
@@ -235,16 +268,18 @@ void printTree( TreeNode * tree )
           fprintf(listing,"Const: %d\n",tree->attr.val);
           break;
         case IdK:
-          fprintf(listing,"Id: %s\n",tree->attr.name);
+			
+          fprintf(listing,"Id: %s \n",tree->attr.name);
           break;
-		case CallK:
-			fprintf(listing, "Call id is \n");
-			break;
+		
 		case ArrK:
 			fprintf(listing, "Array  at : \n");
 			break;
 		case VarK:
 			fprintf(listing, "Variable \n");
+			if (tree->child[1] != NULL) {					//如果不为空则表明是数组名
+				tree->child[0]->id_type = 1;
+			}
 			break;
         default:
           fprintf(listing,"Unknown ExpNode kind\n");
@@ -254,9 +289,11 @@ void printTree( TreeNode * tree )
 	else if (tree->nodekind == TypeK) {
 		switch (tree->kind.type) {
 		case IntK:
+			tree->type = Integer;
 			fprintf(listing, "Kind: int \n");
 			break;
 		case VoidK:
+			tree->type = Void;
 			fprintf(listing, "Kind: void \n");
 			break;
 		default:
@@ -268,19 +305,40 @@ void printTree( TreeNode * tree )
 		switch (tree->kind.type) {
 
 		case FuncDecK:
-			fprintf(listing, " Function declare  \n");
+			fprintf(listing, " Function declare %d \n",tree->lineno);
+			
+			tree->child[1]->id_type = 2;					//变量名改为函数名
+			tree->child[1]->declared = 1;
+			tree->child[3]->declared = 1;					//函数体已经压入
+			switch (tree->child[0]->kind.type) {
+			case IntK:
+				tree->type = Integer;
+				break;
+			case VoidK:
+				tree->type = Void;
+				break;
+			}
+
+
+
 			break;
 		case CompK:
 			fprintf(listing, " Comppound-stmt \n");
 			break;
 		case ParamK:
-			if(tree->attr.name!="void")
-			fprintf(listing, " Params \n");
+			if (tree->attr.name != "void") {
+				tree->child[1]->declared = 1;
+				tree->child[1]->id_type = 3;
+				tree->attr.name = tree->child[1]->attr.name;
+				fprintf(listing, " Params \n");
+			}
 			else
 				fprintf(listing, " Params is null\n");
 			break;
 		case ParamArrK:
 			fprintf(listing, " Params Array\n");
+			tree->child[1]->id_type = 4;
+			tree->child[1]->declared = 1;
 			break;
 		default:
 			fprintf(listing, "Unknown TypeNode kind\n");

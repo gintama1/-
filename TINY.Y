@@ -113,10 +113,11 @@ param :type-specifier id{
 		$$->child[1]=$2;
 		}
 		;
-compound-stmt:SLP local-declarations statement-list SRP{
+compound-stmt:SLP local-declarations statement-list end{
 			$$=newFuncNode(CompK);					
 			$$->child[0]=$2;
 			$$->child[1]=$3;
+			$$->child[2]=$4;
 		}
 		;
 		
@@ -154,27 +155,34 @@ expression-stmt:expression SEMI{
 				}
 				|SEMI{$$=NULL;}
 				;
-selection-stmt:IF LPAREN expression RPAREN SLP statement-list SRP {
+selection-stmt:IF LPAREN expression RPAREN statement {
 				   $$ = newStmtNode(IfK);
                    $$->child[0] = $3;
-                   $$->child[1] = $6;
+                   $$->child[1] = $5;
+				   
 				}
-				|IF  LPAREN expression RPAREN SLP statement-list SRP else-stmt
+				|IF  LPAREN expression RPAREN statement else-stmt
 				{
 				   $$ = newStmtNode(IfK);
                    $$->child[0] = $3;
-                   $$->child[1] = $6;
-                   $$->child[2] = $8;
+                   $$->child[1] = $5;
+                   $$->child[2] = $6;
+				  
 				};
-else-stmt:ELSE SLP statement-list SRP{
+else-stmt:ELSE statement{
 				$$ = newStmtNode(ElseK);
-				$$->child[0] = $3;
+				$$->child[0] =$2;
+				
 				}
-iteration-stmt:WHILE LPAREN expression RPAREN SLP statement-list SRP{
+iteration-stmt:WHILE LPAREN expression RPAREN statement{
 				  $$ = newStmtNode(WhileK);
 				  $$->child[0] = $3;
-                  $$->child[1] = $6;
+                  $$->child[1] = $5;
+				 
 				};
+end: SRP{
+	$$=newStmtNode(EndK);
+}
 return-stmt: RETURN SEMI
 			  {$$ = newStmtNode(ReturnK);}
 			  | RETURN expression SEMI
@@ -286,7 +294,7 @@ factor      : LPAREN expression RPAREN
             | error { $$ = NULL; }
             ;
  call: id LPAREN  args RPAREN{
-		$$=newExpNode(CallK);					//调用函数节点
+		$$=newStmtNode(CallK);					//调用函数节点
 		$$->child[0]=$1;
 		$$->child[1]=$3;
 		}

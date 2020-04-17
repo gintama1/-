@@ -63,8 +63,8 @@ extern int lineno; /* source line number for listing */
 /**************************************************/
 
 typedef enum { StmtK, ExpK,TypeK,FunK } NodeKind;
-typedef enum { IfK, RepeatK, AssignK,  ReadK, WriteK,ReturnK,WhileK, VarDecK,ElseK} StmtKind;
-typedef enum { OpK, ConstK, IdK, CallK , ArrK,VarK } ExpKind;
+typedef enum { IfK, RepeatK, AssignK,  ReadK, WriteK,ReturnK,WhileK, VarDecK,ElseK,EndK, CallK} StmtKind;
+typedef enum { OpK, ConstK, IdK,  ArrK,VarK } ExpKind;
 //新建类型：int，void
 typedef enum { IntK, VoidK} TypeKind;
 //新建类型：普通参数，函数体，变量定义，参数数组
@@ -87,8 +87,11 @@ typedef struct treeNode
 		int val;
 		char * name;
 	} attr;
+	int id_type;			//变量名类型（0变量名，1数组名，2函数名，3参数变量名，4参数数组名）
+	int declared;			//用于判定id，component是否已被插入过（0：未被插入，1：已被插入）
 	int * array;
 	int len;
+	
 	ExpType type; /* for type checking of exps */
 } TreeNode;
 
