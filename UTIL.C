@@ -269,7 +269,7 @@ void printTree( TreeNode * tree )
           break;
         case IdK:
 			
-          fprintf(listing,"Id: %s \n",tree->attr.name);
+          fprintf(listing,"Id: %s %d\n",tree->attr.name,tree->id_type);
           break;
 		
 		case ArrK:
@@ -305,7 +305,7 @@ void printTree( TreeNode * tree )
 		switch (tree->kind.type) {
 
 		case FuncDecK:
-			fprintf(listing, " Function declare %d \n",tree->lineno);
+			fprintf(listing, " Function declare  \n");
 			
 			tree->child[1]->id_type = 2;					//变量名改为函数名
 			tree->child[1]->declared = 1;

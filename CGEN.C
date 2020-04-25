@@ -21,6 +21,7 @@ static int tmpOffset = 0;
 /* prototype for internal recursive code generator */
 static void cGen (TreeNode * tree);
 
+
 /* Procedure genStmt generates code at a statement node */
 static void genStmt( TreeNode * tree)
 { TreeNode * p1, * p2, * p3;

@@ -199,7 +199,8 @@ void st_insert( char * name, int id_type,int lineno, int loc ,int token)
   BucketList l =  hashTable[h];
   
   while ((l != NULL) && ((strcmp(name, l->name) != 0) || (id_type != l->id_type))) {
-	  if ((strcmp(name, l->name) == 0) && l->id_type == 3)break;
+	  if ((strcmp(name, l->name) == 0) && l->id_type == 3&&id_type==0)break;
+	  if ((strcmp(name, l->name) == 0) && l->id_type == 4 && id_type == 1)break;
 	  l = l->next;
   }
    
@@ -277,6 +278,7 @@ int st_parent_lookup(char * name, int type, int num)
 	BucketList l = hashTable[h]->next;
 	while ((l != NULL) && ((strcmp(name, l->name) != 0) || (type != l->id_type))) {
 		if ((strcmp(name, l->name) == 0) && l->id_type == 3)break;
+		if ((strcmp(name, l->name) == 0) && l->id_type == 4 && type == 1)break;
 		l = l->next;
 	}
 	if (l == NULL) {
@@ -295,7 +297,8 @@ int st_lookup ( char * name ,int type ,int tag)					//tag=0,声明 tag=1 调用
 { int h = index;
   BucketList l =  hashTable[h]->next;
   while ((l != NULL) && ((strcmp(name, l->name) != 0) || (type != l->id_type))) {
-	  if ((strcmp(name, l->name) == 0) && l->id_type == 3)break;
+	  if ((strcmp(name, l->name) == 0) && l->id_type == 3&&type==0)break;
+	  if ((strcmp(name, l->name) == 0) && l->id_type == 4&&type==1)break;
 	  l = l->next;
   }
   if (tag == 1) {															//调用
@@ -357,7 +360,7 @@ void printSymTab(FILE * listing)
 
 
 
-int findFunction(char * name) {
+int findFunction(char * name) {								//查找函数
 	int num = 0;
 	for (; hashTable[num] != NULL&&num < SIZE; num++) {
 		if (strcmp(hashTable[num]->next->name,name) == 0&& hashTable[num]->next->id_type==2) {
@@ -366,7 +369,7 @@ int findFunction(char * name) {
 	}
 	return -1;
 }
-int compare(int num,int count,int target) {
+int compare(int num,int count,int target) {				//参数
 	BucketList l = hashTable[num]->next;
 	int i = 0;
 	while (l != NULL&&i<count) {
@@ -377,6 +380,6 @@ int compare(int num,int count,int target) {
 	if ((l->id_type == 3 && target == 0) || (l->id_type == 4 && target == 1))return 1;
 	return 0;
 }
-int getReturnType(int num) {
+int getReturnType(int num) {							//获取函数返回类型
 	return hashTable[num]->return_type;
 }

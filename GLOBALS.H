@@ -89,8 +89,9 @@ typedef struct treeNode
 	} attr;
 	int id_type;			//变量名类型（0变量名，1数组名，2函数名，3参数变量名，4参数数组名）
 	int declared;			//用于判定id，component是否已被插入过（0：未被插入，1：已被插入）
-	int * array;
+	//int * array;
 	int len;
+	char *token;
 	
 	ExpType type; /* for type checking of exps */
 } TreeNode;

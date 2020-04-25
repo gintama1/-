@@ -1484,7 +1484,7 @@ yyreduce:
 			yyval->child[0]=yyvsp[-6];
 			yyval->child[1]=yyvsp[-5];
 			yyval->len=savedVal;
-			yyval->array=(int *) malloc (savedVal * sizeof(int));
+			
 		
 			}
 #line 1491 "TINY.tab.c"
@@ -1765,7 +1765,7 @@ yyreduce:
   case 41:
 #line 204 "TINY.Y"
                {
-			yyval = newExpNode(VarK);				//调用变量节点
+			yyval = newExpNode(VarK);				//调用变量节点或数组地址节点
 			
 			yyval->child[0]=yyvsp[-1];
 			yyval->child[1]=yyvsp[0];
@@ -1776,7 +1776,7 @@ yyreduce:
   case 42:
 #line 210 "TINY.Y"
                         {
-			yyval = newExpNode(ArrK);				//调用数组节点
+			yyval = newExpNode(ArrK);				//调用数组元素节点
 			yyval->child[0]=yyvsp[-1];
 		}
 #line 1783 "TINY.tab.c"

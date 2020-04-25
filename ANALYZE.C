@@ -101,7 +101,8 @@ static void insertNode( TreeNode * t)
 				int i = 1;
 				while (temp != NULL) {
 					switch (temp->kind.exp) {
-					case VarK:fprintf(listing, "variable  %s\n", temp->child[0]->attr.name);
+					case VarK:
+						//fprintf(listing, "variable  %s\n", temp->child[0]->attr.name);
 						temp->child[0]->declared = 2;						//声明为 可能是数组或变量
 						break;
 					case ConstK:
@@ -137,7 +138,7 @@ static void insertNode( TreeNode * t)
 					 add line number of use only */
 				  st_insert(t->attr.name, t->id_type, t->lineno, 0, token);
 		  }
-		  else if (t->declared == 2&&t->id_type==0) {										//函数调用时，变量名或数组调用
+		  else if (t->declared == 2&&t->id_type==0) {					//函数调用时，变量名或数组调用
 			  token = st_lookup(t->attr.name, t->id_type, 1);							//默认是变量
 			  if ( token== -1)
 			  {

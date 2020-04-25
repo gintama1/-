@@ -15,5 +15,5 @@
  * file name as a comment in the code file
  */
 void codeGen(TreeNode * syntaxTree, char * codefile);
-
+void codeGen1(TreeNode * syntaxTree, char * codefile);
 #endif

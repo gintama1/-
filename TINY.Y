@@ -57,7 +57,7 @@ var-declaration: type-specifier id SEMI{
 			$$->child[0]=$1;
 			$$->child[1]=$2;
 			$$->len=savedVal;
-			$$->array=(int *) malloc (savedVal * sizeof(int));
+			
 		
 			}
 			;
@@ -202,13 +202,13 @@ expression :var ASSIGN expression{
 			
 			
 var:	id arrs{
-			$$ = newExpNode(VarK);				//调用变量节点
+			$$ = newExpNode(VarK);				//调用变量节点或数组地址节点
 			
 			$$->child[0]=$1;
 			$$->child[1]=$2;
 			}
 arrs:	LP expression RP{
-			$$ = newExpNode(ArrK);				//调用数组节点
+			$$ = newExpNode(ArrK);				//调用数组元素节点
 			$$->child[0]=$2;
 		}
 		|{$$=NULL;}

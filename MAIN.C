@@ -15,7 +15,7 @@
 /* set NO_CODE to TRUE to get a compiler that does not
  * generate code
  */
-#define NO_CODE TRUE
+#define NO_CODE FALSE
 
 #include "util.h"
 #if NO_PARSE
@@ -42,7 +42,7 @@ int EchoSource = FALSE;
 int TraceScan = FALSE;
 int TraceParse = TRUE;
 int TraceAnalyze = TRUE;
-int TraceCode = FALSE;
+int TraceCode = TRUE;
 
 int Error = FALSE;
 
@@ -87,10 +87,10 @@ main( int argc, char * argv[] )
     if (TraceAnalyze) fprintf(listing,"\nType Checking Finished\n");
 	
   }
-  while (1) {}
+  
 #if !NO_CODE
   if (! Error)
-  { char * codefile="C:\\Users\\86151\\Desktop\\result.txt";
+  { char * codefile="C:\\Users\\86151\\Desktop\\result2.txt";
     /*int fnlen = strcspn(pgm,".");
     codefile = (char *) calloc(fnlen+4, sizeof(char));
     strncpy(codefile,pgm,fnlen);
@@ -100,11 +100,11 @@ main( int argc, char * argv[] )
     { printf("Unable to open %s\n",codefile);
       exit(1);
     }
-    codeGen(syntaxTree,codefile);
+    codeGen1(syntaxTree,codefile);
     fclose(code);
 	
   }
-  
+  while (1) {}
 #endif
 #endif
 #endif
